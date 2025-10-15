@@ -1,39 +1,60 @@
 // main.js
 
-import { ethers } from "ethers";
-import { provider } from "./connect.js";
+import express from 'express';
+import axios from 'axios';
+import 'dotenv/config'; // Loads variables from .env file
 
-// 1. Corrected Azuro Contract Address (all lowercase)
-const sportsRegistryAddress = "0x56327a5a1656950298b6811a1a32345097457a7e";
-const sportsRegistryAbi = [
-  // The function to get all registered sport IDs
-  "function getSportIds() external view returns (uint40[])"
-];
+// --- Construct the Subgraph URL using your secret API key ---
+const subgraphId = 'J4Ww1R6DQQ57dBmUzdi7oogFTe2TFL6ci41oTWwqrb4L';
+const apiKey = process.env.GRAPH_API_KEY; // Reads key from .env file
+const AZURO_SUBGRAPH_URL = `https://gateway.thegraph.com/api/${apiKey}/subgraphs/id/${subgraphId}`;
 
-async function startApp() {
+// --- Create the Express App ---
+const app = express();
+const port = 3000;
+
+// --- Define the API endpoint ---
+app.get('/sports', async (req, res) => {
+  console.log("Received a request for /sports");
+
+  if (!apiKey) {
+    console.error("API Key is missing!");
+    return res.status(500).json({ error: 'API Key is not configured. Check your .env file.' });
+  }
+
+  const graphQLQuery = {
+    query: `
+      query {
+        sports {
+          id
+          slug
+          name
+        }
+      }
+    `
+  };
+
   try {
-    const blockNumber = await provider.getBlockNumber();
-    console.log("✅ Connection successful! Current block number:", blockNumber);
+    const response = await axios.post(AZURO_SUBGRAPH_URL, graphQLQuery);
+    
+    if (response.data.errors) {
+      throw new Error(`GraphQL Error: ${response.data.errors[0].message}`);
+    }
 
-    // 2. Create an instance of the SportsRegistry contract
-    const sportsContract = new ethers.Contract(
-      sportsRegistryAddress,
-      sportsRegistryAbi,
-      provider
-    );
-    console.log("🚀 Successfully connected to Azuro SportsRegistry contract!");
-
-    // 3. Call the getSportIds() function on the new contract
-    console.log("Calling getSportIds() function...");
-    const sportIds = await sportsContract.getSportIds();
-
-    const formattedSportIds = sportIds.map(id => id.toString());
-
-    console.log("🏅 Success! Available Sport IDs:", formattedSportIds);
+    const sports = response.data.data.sports;
+    console.log("🏅 Success! Fetched sports from the Subgraph API:", sports);
+    res.json({
+      sports: sports
+    });
 
   } catch (error) {
-    console.error("❌ An error occurred:", error);
+    console.error("API Error:", error.message);
+    res.status(500).json({ error: 'Failed to fetch data from the Subgraph API' });
   }
-}
+});
 
-startApp();
+// --- Start the server ---
+app.listen(port, () => {
+  console.log(`🚀 Server is running at http://localhost:${port}`);
+  console.log(`Visit http://localhost:${port}/sports to see the Azuro sports data`);
+});
