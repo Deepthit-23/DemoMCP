@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@azuro-org/sdk": "^6.1.8",
+    "ethers": "^6.15.0"
+  }
+}
