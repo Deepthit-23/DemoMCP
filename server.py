@@ -60,10 +60,11 @@ async def format_name(name: str, format_type: str = "uppercase") -> str:
     else:
         return f"Unknown format type: {format_type}. Available: uppercase, lowercase, title, reverse"
 
-async def main():
+def main():
     """Main function to run the MCP server."""
-    # Run the server
-    await mcp.run()
+    # Run the server directly without asyncio.run wrapper
+    # FastMCP handles its own event loop internally
+    mcp.run()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
