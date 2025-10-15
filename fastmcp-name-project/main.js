@@ -1,8 +1,9 @@
-// main.js
+// main.js - FINAL WORKING VERSION
 
 import express from 'express';
 import axios from 'axios';
 import 'dotenv/config'; // Loads variables from .env file
+import cors from 'cors';
 
 // --- Construct the Subgraph URL using your secret API key ---
 const subgraphId = 'J4Ww1R6DQQ57dBmUzdi7oogFTe2TFL6ci41oTWwqrb4L';
@@ -13,12 +14,14 @@ const AZURO_SUBGRAPH_URL = `https://gateway.thegraph.com/api/${apiKey}/subgraphs
 const app = express();
 const port = 3000;
 
+app.use(cors());
+
 // --- Define the API endpoint ---
 app.get('/sports', async (req, res) => {
   console.log("Received a request for /sports");
 
   if (!apiKey) {
-    console.error("API Key is missing!");
+    console.error("API Key is missing! Check your .env file and restart the server.");
     return res.status(500).json({ error: 'API Key is not configured. Check your .env file.' });
   }
 
