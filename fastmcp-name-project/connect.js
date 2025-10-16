@@ -3,7 +3,7 @@
 import { ethers } from "ethers";
 
 // ⚠️ PASTE YOUR RPC URL FROM STEP 2 HERE
-const RPC_URL = "https://polygon-mainnet.g.alchemy.com/v2/py07Z_9dqNQMQlUyYRnMj";
+const RPC_URL = "https://polygon-amoy.g.alchemy.com/v2/py07Z_9dqNQMQlUyYRnMj";
 
 // Create the provider object with the updated ethers v6 syntax
 const provider = new ethers.JsonRpcProvider(RPC_URL);

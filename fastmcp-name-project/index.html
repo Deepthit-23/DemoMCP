@@ -3,53 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azuro Sports Data</title>
+    <title>Azuro Dashboard</title>
     <style>
-        /* Some basic styling to make it look nice */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #1c1e21;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+        body { font-family: sans-serif; background-color: #f0f2f5; color: #1c1e21; display: flex; justify-content: center; align-items: flex-start; padding-top: 2rem; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 90%; max-width: 600px; }
+        h1, h2 { color: #333; text-align: center; }
+        ul { list-style-type: none; padding: 0; }
+        li { background-color: #e7f3ff; padding: 0.75rem 1rem; margin-bottom: 0.5rem; border-radius: 4px; border-left: 4px solid #1877f2; }
+        button { background-color: #1877f2; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 5px; transition: background-color 0.2s; }
+        button:hover { background-color: #166fe5; }
+        button:disabled { background-color: #a0a0a0; cursor: not-allowed; }
+        input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; margin: 5px; }
+        .dashboard { margin-top: 1rem; text-align: center; }
+        #walletInfo p { margin: 0.5rem 0; }
+        .actions { margin-top: 1rem; }
+
+        /* --- NEW: Styles for our status message box --- */
+        .status-message {
+            margin-top: 1rem;
+            padding: 12px;
+            border-radius: 6px;
+            display: none; /* Hidden by default */
+            font-weight: 500;
         }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 500px;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background-color: #e7f3ff;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            border-radius: 4px;
-            border-left: 4px solid #1877f2;
-        }
+        .status-message.info { display: block; background-color: #e7f3ff; color: #1877f2; border: 1px solid #bde0fe; }
+        .status-message.success { display: block; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-message.error { display: block; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Available Sports on Azuro</h1>
-        <ul id="sports-list">
-            <li>Loading...</li>
-        </ul>
-    </div>
+        <h1>Azuro Protocol Dashboard</h1>
+        
+        <div id="sports-section">
+            <h2>Available Sports</h2>
+            <ul id="sports-list"><li>Loading...</li></ul>
+        </div>
 
+        <hr style="margin: 2rem 0;">
+
+        <div class="dashboard">
+            <h2>Liquidity Dashboard</h2>
+            <button id="connectWalletBtn">Connect Wallet</button>
+            <div id="walletInfo" style="display: none;">
+                <p><strong>Your Address:</strong> <code id="userAddress"></code></p>
+                <p><strong>Your Liquidity:</strong> $<span id="liquidityBalance">0.00</span> USDC</p>
+                <div class="actions">
+                    <input type="number" id="lpAmount" placeholder="Enter amount (USDC)">
+                    <button id="depositBtn">Deposit</button>
+                    <button id="withdrawBtn">Withdraw</button>
+                </div>
+                <div id="statusMessage" class="status-message"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
     <script src="app.js"></script>
 
 </body>
